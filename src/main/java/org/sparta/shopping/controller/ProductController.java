@@ -10,8 +10,8 @@ import org.sparta.shopping.dto.response.ProductResponseDto;
 import org.sparta.shopping.entity.Product;
 import org.sparta.shopping.service.ProductService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,7 +69,8 @@ public class ProductController {
             description = "페이지 정보를 받아 상품 리스트를 조회합니다."
     )
     @GetMapping("/get")
-    public ResponseEntity<ApiResponse<Page<Product>>> getProductList(@PageableDefault(size = 10, sort = "id") Pageable pageable){
+    public ResponseEntity<ApiResponse<Page<Product>>> getProductList(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size){
+        Pageable pageable = PageRequest.of(page,size);
         Page<Product> products = productService.getProductList(pageable);
         return ResponseEntity.ok(ApiResponse.success(products,"상품 리스트 조회에 성공하였습니다."));
     }
